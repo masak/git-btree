@@ -14,11 +14,7 @@ sub infer-tree(%branches) is export {
         unless my @lines-of-root = lines($log-of-root);
     my $root-head-auth = @lines-of-root[0];
     my %branch-of-auth =
-        $root-head-auth => Git::Branch.new(
-            :name($root-branch),
-            :ahead(0),
-            :behind(0),
-        ),
+        $root-head-auth => Git::Branch::Root.new(:name($root-branch)),
     ;
 
     for @sorted-branches -> Pair ( :key($name), :value($log) ) {
@@ -35,7 +31,7 @@ sub infer-tree(%branches) is export {
             next if $auth eq $head-auth;
 
             if %branch-of-auth{$auth} -> $parent-branch {
-                $this-branch = Git::Branch.new(
+                $this-branch = Git::Branch::Child.new(
                     :$name,
                     :ahead($index),
                     :behind(0),

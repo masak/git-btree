@@ -1,11 +1,10 @@
-class Git::Branch {
+class Git::Branch::Child { ... }
+
+role Git::Branch {
     has $.name is required;
-    has $.ahead is required;
-    has $.behind is required;
+    has Git::Branch::Child @.children;
 
-    has Git::Branch @.children;
-
-    method add-child(Git::Branch $child-branch) {
+    method add-child(Git::Branch::Child $child-branch) {
         @.children.push($child-branch);
         @.children.=sort(*.name);
     }
@@ -13,4 +12,12 @@ class Git::Branch {
     method AT-POS($pos) {
         @.children[$pos];
     }
+}
+
+class Git::Branch::Root does Git::Branch {
+}
+
+class Git::Branch::Child does Git::Branch {
+    has $.ahead is required;
+    has $.behind is required;
 }
