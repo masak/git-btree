@@ -6,44 +6,42 @@ sub infer-tree(Str $current-branch, %branches) is export {
     my @sorted-branches = %branches.sort({ +lines(.value) });
 
     # this value will be overridable by confic in the fullness of time
-    my $root-branch = "master";
+    my $root-name = "master";
+    my %branch-of-auth;
 
     die "No master branch -- TODO"
-        unless my $log-of-root = %branches{$root-branch};
+        unless my $log-of-root = %branches{$root-name};
     die "No commits for the root branch -- TODO"
         unless my @lines-of-root = lines($log-of-root);
-    my $root-head-auth = @lines-of-root[0];
-    my %branch-of-auth =
-        $root-head-auth => Git::Branch::Root.new(
-            :name($root-branch),
-            :is-current-branch($current-branch eq $root-branch),
-        ),
-    ;
+    my $root-branch = Git::Branch::Root.new(
+        :name($root-name),
+        :is-current-branch($current-branch eq $root-name),
+    );
+    for @lines-of-root.kv -> $behind, $auth {
+        %branch-of-auth{$auth} = [$behind, $root-branch];
+    }
 
     for @sorted-branches -> Pair ( :key($branch), :value($log) ) {
+        next if $branch eq $root-name;
+
         my @lines = lines($log);
-
-        next if $branch eq $root-branch;
-
         die "No log, not even for the commit under the branch -- possible if the branch is orphaned and new? -- TODO"
             unless @lines;
-        my $head-auth = @lines[0];
 
-        my $this-branch;
+        my $this-branch = Git::Branch::Child.new(
+            :name($branch),
+            :is-current-branch($current-branch eq $branch),
+        );
+
         for @lines.kv -> $index, $auth {
-            next if $auth eq $head-auth;
-
-            if %branch-of-auth{$auth} -> $parent-branch {
-                $this-branch = Git::Branch::Child.new(
-                    :name($branch),
-                    :is-current-branch($current-branch eq $branch),
-                    :ahead($index),
-                    :behind(0),
-                );
-                %branch-of-auth{$head-auth} = $this-branch;
-
+            if %branch-of-auth{$auth} -> [$behind, $parent-branch] {
+                $this-branch.ahead = $index;
+                $this-branch.behind = $behind;
                 $parent-branch.add-child($this-branch);
                 last;
+            }
+            else {
+                %branch-of-auth{$auth} = [$index, $this-branch];
             }
         }
 
@@ -52,5 +50,5 @@ sub infer-tree(Str $current-branch, %branches) is export {
         }
     }
 
-    return %branch-of-auth{$root-head-auth};
+    return $root-branch;
 }

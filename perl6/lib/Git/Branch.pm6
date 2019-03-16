@@ -51,8 +51,8 @@ class Git::Branch::Root does Git::Branch {
 }
 
 class Git::Branch::Child does Git::Branch {
-    has $.ahead is required;
-    has $.behind is required;
+    has $.ahead is rw = 0;
+    has $.behind is rw = 0;
 
     method color-name() {
         $.is-current-branch
@@ -61,9 +61,11 @@ class Git::Branch::Child does Git::Branch {
     }
 
     method ahead-behind-info() {
-        $.ahead
-            ?? " [{$.ahead}+]"
-            !! "";
+        $.ahead && $.behind
+            ?? " [{$.ahead}+, {$.behind}-]"
+            !! $.ahead
+                ?? " [{$.ahead}+]"
+                !! "";
     }
 
     method child-indent() {
