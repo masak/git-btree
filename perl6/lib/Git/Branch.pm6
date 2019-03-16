@@ -13,13 +13,20 @@ role Git::Branch {
         @.children[$pos];
     }
 
-    method monochrome-output() {
-        ". {$.name}{self.ahead-behind-info()}\n" ~
-        @.children».monochrome-output
+    method color-output() {
+        ". {self.color-name()}{self.ahead-behind-info()}\n" ~
+        @.children».color-output
             .join()
             .indent(2)
             .subst(/^^ "  "/, self.child-indent(), :g);
     }
+
+    method monochrome-output() {
+        self.color-output()
+            .subst(/"<" "/"? \w+ ">"/, "", :g);
+    }
+
+    method color-name { ... }
 
     method ahead-behind-info() { ... }
 
@@ -27,6 +34,10 @@ role Git::Branch {
 }
 
 class Git::Branch::Root does Git::Branch {
+    method color-name {
+        $.name;
+    }
+
     method ahead-behind-info() {
         "";
     }
@@ -39,6 +50,10 @@ class Git::Branch::Root does Git::Branch {
 class Git::Branch::Child does Git::Branch {
     has $.ahead is required;
     has $.behind is required;
+
+    method color-name() {
+        "<green>{$.name}</green>";
+    }
 
     method ahead-behind-info() {
         $.ahead
