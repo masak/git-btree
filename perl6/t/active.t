@@ -8,9 +8,9 @@ use Git::Branch;
 
     is $root.color-output(), q:to/EOF/, "correct color output";
         . <inverted-white>master</inverted-white>
-          . <green>feature-a1</green> [2+]
-          ... <green>feature-a2</green> [3+]
-          . <green>feature-b</green> [1+]
+          . <green>feature-a1</green> [+2]
+          ... <green>feature-a2</green> [+3]
+          . <green>feature-b</green> [+1]
         EOF
 }
 
@@ -19,9 +19,9 @@ use Git::Branch;
 
     is $root.color-output(), q:to/EOF/, "correct color output";
         . master
-          . <green>feature-a1</green> [2+]
-          ... <inverted-green>feature-a2</inverted-green> [3+]
-          . <green>feature-b</green> [1+]
+          . <green>feature-a1</green> [+2]
+          ... <inverted-green>feature-a2</inverted-green> [+3]
+          . <green>feature-b</green> [+1]
         EOF
 }
 
@@ -30,9 +30,9 @@ use Git::Branch;
 
     is $root.color-output(), q:to/EOF/, "correct color output";
         . master
-          . <green>feature-a1</green> [2+]
-          ... <green>feature-a2</green> [3+]
-          . <green>feature-b</green> [1+]
+          . <green>feature-a1</green> [+2]
+          ... <green>feature-a2</green> [+3]
+          . <green>feature-b</green> [+1]
         EOF
 }
 

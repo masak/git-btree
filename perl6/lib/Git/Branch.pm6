@@ -62,9 +62,9 @@ class Git::Branch::Child does Git::Branch {
 
     method ahead-behind-info() {
         $.ahead && $.behind
-            ?? " [{$.ahead}+, {$.behind}-]"
+            ?? " [+{$.ahead}, -{$.behind}]"
             !! $.ahead
-                ?? " [{$.ahead}+]"
+                ?? " [+{$.ahead}]"
                 !! "";
     }
 

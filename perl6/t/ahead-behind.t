@@ -38,18 +38,18 @@ my $root = infer-tree("", %branches);
 {
     is $root.monochrome-output(), q:to/EOF/, "correct monochrome output";
         . master
-          . feature-a1 [2+, 1-]
-          ... feature-a2 [3+]
-          . feature-b [1+, 3-]
+          . feature-a1 [+2, -1]
+          ... feature-a2 [+3]
+          . feature-b [+1, -3]
         EOF
 }
 
 {
     is $root.color-output(), q:to/EOF/, "correct color output";
         . master
-          . <green>feature-a1</green> [2+, 1-]
-          ... <green>feature-a2</green> [3+]
-          . <green>feature-b</green> [1+, 3-]
+          . <green>feature-a1</green> [+2, -1]
+          ... <green>feature-a2</green> [+3]
+          . <green>feature-b</green> [+1, -3]
         EOF
 }
 
