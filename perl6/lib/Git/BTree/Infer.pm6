@@ -1,6 +1,6 @@
 use Git::Branch;
 
-sub infer-tree(%branches) is export {
+sub infer-tree(Str $current-branch, %branches) is export {
     # if we traverse the branches by increasing commit log length, we can be sure to always
     # know about a branch's parent when visiting the branch
     my @sorted-branches = %branches.sort({ +lines(.value) });
@@ -14,13 +14,16 @@ sub infer-tree(%branches) is export {
         unless my @lines-of-root = lines($log-of-root);
     my $root-head-auth = @lines-of-root[0];
     my %branch-of-auth =
-        $root-head-auth => Git::Branch::Root.new(:name($root-branch)),
+        $root-head-auth => Git::Branch::Root.new(
+            :name($root-branch),
+            :is-current-branch($current-branch eq $root-branch),
+        ),
     ;
 
-    for @sorted-branches -> Pair ( :key($name), :value($log) ) {
+    for @sorted-branches -> Pair ( :key($branch), :value($log) ) {
         my @lines = lines($log);
 
-        next if $name eq $root-branch;
+        next if $branch eq $root-branch;
 
         die "No log, not even for the commit under the branch -- possible if the branch is orphaned and new? -- TODO"
             unless @lines;
@@ -32,7 +35,8 @@ sub infer-tree(%branches) is export {
 
             if %branch-of-auth{$auth} -> $parent-branch {
                 $this-branch = Git::Branch::Child.new(
-                    :$name,
+                    :name($branch),
+                    :is-current-branch($current-branch eq $branch),
                     :ahead($index),
                     :behind(0),
                 );

@@ -2,6 +2,7 @@ class Git::Branch::Child { ... }
 
 role Git::Branch {
     has $.name is required;
+    has Bool $.is-current-branch;
     has Git::Branch::Child @.children;
 
     method add-child(Git::Branch::Child $child-branch) {
@@ -35,7 +36,9 @@ role Git::Branch {
 
 class Git::Branch::Root does Git::Branch {
     method color-name {
-        $.name;
+        $.is-current-branch
+            ?? "<inverted-white>{$.name}</inverted-white>"
+            !! $.name;
     }
 
     method ahead-behind-info() {
@@ -52,7 +55,9 @@ class Git::Branch::Child does Git::Branch {
     has $.behind is required;
 
     method color-name() {
-        "<green>{$.name}</green>";
+        $.is-current-branch
+            ?? "<inverted-green>{$.name}</inverted-green>"
+            !! "<green>{$.name}</green>";
     }
 
     method ahead-behind-info() {

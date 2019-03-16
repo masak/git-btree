@@ -41,48 +41,31 @@ my %branches =
         .
 ;
 
-my $root = infer-tree("", %branches);
-
 {
-    my $branch = $root;
-    isa-ok $branch, Git::Branch::Root;
-    is $branch.name, "master", "the root branch is 'master'";
-}
+    my $root = infer-tree("master", %branches);
 
-{
-    my $branch = $root[0];
-    isa-ok $branch, Git::Branch::Child;
-    is $branch.name, "feature-a1", "the name of the first child of 'master' is 'feature-a1'";
-    is $branch.ahead, 2, "...and it's 2 commits ahead";
-    is $branch.behind, 0, "...and it's 0 commits behind";
-}
-
-{
-    my $branch = $root[0][0];
-    isa-ok $branch, Git::Branch::Child;
-    is $branch.name, "feature-a2", "the name of the child of 'feature-a1' is 'feature-a2'";
-    is $branch.ahead, 3, "...and it's 3 commits ahead";
-    is $branch.behind, 0, "...and it's 0 commits behind";
-}
-
-{
-    my $branch = $root[1];
-    isa-ok $branch, Git::Branch::Child;
-    is $branch.name, "feature-b", "the name of the second child of 'master' is 'feature-b'";
-    is $branch.ahead, 1, "...and it's 1 commit ahead";
-    is $branch.behind, 0, "...and it's 0 commits behind";
-}
-
-{
-    is $root.monochrome-output(), q:to/EOF/, "correct monochrome output";
-        . master
-          . feature-a1 [2+]
-          ... feature-a2 [3+]
-          . feature-b [1+]
+    is $root.color-output(), q:to/EOF/, "correct color output";
+        . <inverted-white>master</inverted-white>
+          . <green>feature-a1</green> [2+]
+          ... <green>feature-a2</green> [3+]
+          . <green>feature-b</green> [1+]
         EOF
 }
 
 {
+    my $root = infer-tree("feature-a2", %branches);
+
+    is $root.color-output(), q:to/EOF/, "correct color output";
+        . master
+          . <green>feature-a1</green> [2+]
+          ... <inverted-green>feature-a2</inverted-green> [3+]
+          . <green>feature-b</green> [1+]
+        EOF
+}
+
+{
+    my $root = infer-tree("", %branches);
+
     is $root.color-output(), q:to/EOF/, "correct color output";
         . master
           . <green>feature-a1</green> [2+]
