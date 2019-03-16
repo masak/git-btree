@@ -73,4 +73,13 @@ my $root = infer-tree(%branches);
     is $branch.behind, 0, "...and it's 0 commits behind";
 }
 
+{
+    is $root.monochrome-output, q:to/EOF/, "correct monochrome output";
+        . master
+          . feature-a1 [2+]
+          ... feature-a2 [3+]
+          . feature-b [1+]
+        EOF
+}
+
 done-testing;
