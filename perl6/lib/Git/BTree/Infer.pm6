@@ -44,10 +44,6 @@ sub infer-tree(Str $current-branch, %branches) is export {
                 %branch-of-auth{$auth} = [$index, $this-branch];
             }
         }
-
-        if !$this-branch {
-            die "Guess this case happens for orphaned branches -- TODO";
-        }
     }
 
     return $root-branch;
