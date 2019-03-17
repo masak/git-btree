@@ -5,7 +5,7 @@ sub infer-tree(Str $current-branch, %branches) is export {
     # know about a branch's parent when visiting the branch
     my @sorted-branches = %branches.sort({ +lines(.value) });
 
-    # this value will be overridable by confic in the fullness of time
+    # this value will be overridable by config in the fullness of time
     my $root-name = "master";
     my %branch-of-auth;
 
