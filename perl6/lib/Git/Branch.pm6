@@ -15,7 +15,7 @@ role Git::Branch {
     }
 
     method color-output() {
-        ". {self.color-name()}{self.ahead-behind-info()}\n" ~
+        "{self.action-symbol()} {self.color-name()}{self.ahead-behind-info()}\n" ~
         @.children».color-output
             .join()
             .indent(2)
@@ -24,10 +24,12 @@ role Git::Branch {
 
     method monochrome-output() {
         self.color-output()
-            .subst(/"<" "/"? \w+ ">"/, "", :g);
+            .subst(/"<" "/"? [\w+] +% "-" ">"/, "", :g);
     }
 
-    method color-name { ... }
+    method action-symbol() { ... }
+
+    method color-name() { ... }
 
     method ahead-behind-info() { ... }
 
@@ -35,7 +37,11 @@ role Git::Branch {
 }
 
 class Git::Branch::Root does Git::Branch {
-    method color-name {
+    method action-symbol() {
+        ".";
+    }
+
+    method color-name() {
         $.is-current-branch
             ?? "<inverted-white>{$.name}</inverted-white>"
             !! $.name;
@@ -53,6 +59,12 @@ class Git::Branch::Root does Git::Branch {
 class Git::Branch::Child does Git::Branch {
     has $.ahead is rw = 0;
     has $.behind is rw = 0;
+
+    method action-symbol() {
+        $.ahead && $.behind
+            ?? "<red>*</red>"
+            !! ".";
+    }
 
     method color-name() {
         $.is-current-branch
