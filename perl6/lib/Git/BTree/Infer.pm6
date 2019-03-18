@@ -17,7 +17,17 @@ sub infer-tree(Str $current-branch, %branches) is export {
         :name($root-name),
         :is-current-branch($current-branch eq $root-name),
     );
-    for @lines-of-root.kv -> $behind, $auth {
+    for @lines-of-root.kv -> $behind, $line {
+        $line ~~ /
+            ^
+            <[ 0..9 a..f ]> ** 40
+            " ("
+            [<[ 0..9 a..f ]> ** 40] *% " "
+            ") "
+            (.+)
+            $
+        / or die "Unexpected line format `$line`";
+        my $auth = ~$0;
         %branch-of-auth{$auth} = [$behind, $root-branch];
     }
 
@@ -33,7 +43,17 @@ sub infer-tree(Str $current-branch, %branches) is export {
             :is-current-branch($current-branch eq $branch),
         );
 
-        for @lines.kv -> $index, $auth {
+        for @lines.kv -> $index, $line {
+            $line ~~ /
+                ^
+                <[ 0..9 a..f ]> ** 40
+                " ("
+                [<[ 0..9 a..f ]> ** 40] *% " "
+                ") "
+                (.+)
+                $
+            / or die "Unexpected line format `$line`";
+            my $auth = ~$0;
             if %branch-of-auth{$auth} -> [$behind, $parent-branch] {
                 $this-branch.ahead = $index;
                 $this-branch.behind = $behind;
