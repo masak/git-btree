@@ -138,7 +138,7 @@ The commit marked `_old_ feature-a1` doesn't even have a ref anymore, but it's s
 
 A child branch is defined as _stale_ when its parent branch has been rebased away from the child branch.
 
-Note in passing that only branches on level 2 and deeper can be stale, because `master` cannot be rebased against anything.
+Note in passing that only branches on level 2 and deeper can be stale, because `master` cannot be rebased against anything. (_Update_: This is not quite correct; in a workflow that allows committing directly to master, _and_ a (rare) circumstance where you've (1) committed to `master` without pushing, (2) branched from `master` and committed to that branch, (3) rebased the local parts of master, your branch is now stale. Rare as it is, this is something we should absolutely support.)
 
 In the case of the commit history above, the tool would output this:
 
