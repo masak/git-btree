@@ -164,7 +164,7 @@ It's icing on the cake, but it'd be nice at some point if the tool could mark up
   ..... feature-a3 [+2]
 ```
 
-`feature-a3` might actually be conflicted against the _rebased_ result of `feature-a2`; we strictly don't know yet, because we haven't done that rebase yet. But what we can do instead of just dry-run-merging `feature-a3` against `feature-a2` and then stopping, is going up the chain; in this case dry-run-mergin `feature-a3` against first `feature-a2`, then `feature-a1`, then `master`. Dry-run-merging is presumably cheap, since it happens behind the scenes and has no visible side effects.
+`feature-a3` might actually be conflicted against the _rebased_ result of `feature-a2`; we strictly don't know yet, because we haven't done that rebase yet. But what we can do instead of just dry-run-merging `feature-a3` against `feature-a2` and then stopping, is going up the chain; in this case dry-run-merging `feature-a3` against first `feature-a2`, then `feature-a1`, then `master`. Dry-run-merging is presumably cheap, since it happens behind the scenes and has no visible side effects.
 
 Again, this is conjectural, but maybe in such a case the output should note as much:
 
