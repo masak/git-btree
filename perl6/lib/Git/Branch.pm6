@@ -15,11 +15,21 @@ role Git::Branch {
     }
 
     method color-output() {
-        "{self.action-symbol()} {self.color-name()}{self.ahead-behind-info()}\n" ~
-        @.children».color-output
-            .join()
-            .indent(2)
+        my $branch-description = "{self.action-symbol()} {self.color-name()}{self.ahead-behind-info()}\n";
+
+        my @active-branches = @.children.grep(!*.done);
+        my $active-branches = @active-branches».color-output()\
+            .join()\
+            .indent(2)\
             .subst(/^^ "  "/, self.child-indent(), :g);
+
+        my @done-branches = @.children.grep(*.done);
+        my $done-branches = @done-branches
+            ?? "---\n" ~ @done-branches».color-output()\
+                .join()
+            !! "";
+
+        return $branch-description ~ $active-branches ~ $done-branches;
     }
 
     method monochrome-output() {
@@ -34,6 +44,8 @@ role Git::Branch {
     method ahead-behind-info() { ... }
 
     method child-indent() { ... }
+
+    method done { ... }
 }
 
 class Git::Branch::Root does Git::Branch {
@@ -54,6 +66,10 @@ class Git::Branch::Root does Git::Branch {
     method child-indent() {
         "  ";
     }
+
+    method done() {
+        False;
+    }
 }
 
 class Git::Branch::Child does Git::Branch {
@@ -63,13 +79,17 @@ class Git::Branch::Child does Git::Branch {
     method action-symbol() {
         $.ahead && $.behind
             ?? "<red>*</red>"
-            !! ".";
+            !! self.done()
+                ?? "<gray>~</gray>"
+                !! ".";
     }
 
     method color-name() {
         $.is-current-branch
             ?? "<inverted-green>{$.name}</inverted-green>"
-            !! "<green>{$.name}</green>";
+            !! self.done()
+                ?? "<gray>{$.name}</gray>"
+                !! "<green>{$.name}</green>";
     }
 
     method ahead-behind-info() {
@@ -77,10 +97,16 @@ class Git::Branch::Child does Git::Branch {
             ?? " [+{$.ahead}, -{$.behind}]"
             !! $.ahead
                 ?? " [+{$.ahead}]"
-                !! "";
+                !! $.behind
+                    ?? " [done]"
+                    !! "";
     }
 
     method child-indent() {
         "..";
+    }
+
+    method done() {
+        $.behind && !$.ahead;
     }
 }
