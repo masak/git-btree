@@ -93,7 +93,7 @@ The `~` symbol here signifies that you can now `git purge` the `feature-b` branc
 
 ## Conflicts
 
-A _dry-run merge_ is a merge but without the merge commit. A diverged (ahead/behind) branch is _conflicted_ if a dry-run merge into its parent branch leads to a conflict.
+A _dry-run merge_ is a merge operation that doesn't put a commit on a branch; it just checks if the merge would succeed or have conflicts. A diverged (ahead/behind) branch is _conflicted_ if a dry-run merge into its parent branch leads to a conflict.
 
 Having merged and purged `feature-b`, let's assume `feature-a1` actually got conflicted from that merge. The commit history now actually looks simpler:
 
