@@ -24,7 +24,7 @@ The branches are ordered hierarchically according to their commit-ancestor relat
 
 On the #git channel once when I mentioned it, someone said when I mentioned hierarchical branches that they generally try to avoid that sort of thing. I actually agree with that; it's not an end in itself &mdash; but it does happen occasionally, for example when a task naturally divides into two consecutive PRs.
 
-In other words, I don't expect there to be more than one nesting level under `master` most of the time, and _occasionally_ a second nesting level. I'm even fine with nesting level 3 and above not being rendered any more nested than the second level.
+In other words, I don't expect there to be more than one nesting level under `master` most of the time, and _occasionally_ a second nesting level. I'm even fine with nesting level 3 and above not being rendered any more nested than the second level. (To avoid a "pyramid of doom" situation where the nesting turns from a benefit to a burden.)
 
 ## Ahead, behind, diverged
 
