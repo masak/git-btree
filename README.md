@@ -149,7 +149,7 @@ $ git btree
   ..? feature-a2 [+3, stale]
 ```
 
-Here, the symbol `?` indicates that this branch has become stale and in a sense is forgotten and needs to be cared about. The solution in this case is to rebase this branch. The rebase command in this case would be `git rebase --onto feature-a1 old-feature-a1 feature-a2`, which means we also have to locate `old-feature-a1`, which (again) doesn't have a ref. (This is exactly why that `git-recursive-rebase` tool should exist. It just now strikes me that it should also work _retroactively_; that is, it should handle `feature-a2` in this case even when `feature-a1` was rebased normally.)
+Here, the symbol `?` indicates that this branch has become stale and in a sense is forgotten and needs to be cared about. The solution in this case is to rebase this branch. The rebase command in this case would be `git rebase --onto feature-a1 old-feature-a1 feature-a2`, which means we also have to locate `old-feature-a1`, which (again) doesn't have a ref. (This is exactly why that `git-cascade-rebase` tool should exist. It just now strikes me that it should also work _retroactively_; that is, it should handle `feature-a2` in this case even when `feature-a1` was rebased normally.)
 
 In rare cases, a branch may be conflicted (`!`) and stale (`?`) at the same time. It then gets the symbol `‽`.
 
