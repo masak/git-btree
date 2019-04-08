@@ -105,7 +105,7 @@ Having merged and purged `feature-b`, let's assume `feature-a1` actually got con
            +--o--o--o feature-a2 (three commits ahead of feature-a1)
 ```
 
-From the commit history alone, we can't tell whether `feature-a1` is conflicted or not. That information is "inside" of the commits, more precisely in the interplay between the two commits "on" `feature-a1` and the two commits "on" `master`.
+From the commit history alone, we can't tell whether `feature-a1` is conflicted or not. That information resides inside of the commits, more precisely in the interplay between the two commits "on" `feature-a1` and the two commits "on" `master`. (The square quotes are a signal that this is `btree`'s view of what it means to be on a branch, not Git's.)
 
 In this case, we assume it's conflicted. Then the output is this:
 
@@ -120,7 +120,7 @@ The `!` symbol means "this diverged branch is conflicted". Since merging is the 
 
 Note, again, that `feature-a2` is not marked as conflicted. That's because the conflict exists between `feature-a1` and `master`, and we can't really tell until that's been resolved whether `feature-a2` is in conflict with `feature-a1`.
 
-I have this other tool called `git-recursive-rebase` that I haven't written yet. Similar to this `git-btree` tool, it would take branch hierarchies into consideration, and when you asked it to rebase a branch, it would first rebase that branch and then rebase all its descendant branches in [breadth-first](https://en.wikipedia.org/wiki/Breadth-first_search) order. The reason this is a tall order is that `git-rebase` is already a long-running command (what with `--continue` and `--abort` and all that), so `git-recursive-rebase` needs to be, too.
+I have this other tool called `git-cascade-rebase` that I haven't written yet. Similar to this `git-btree` tool, it would take branch hierarchies into consideration, and when you asked it to rebase a branch, it would first rebase that branch and then rebase all its descendant branches in [breadth-first](https://en.wikipedia.org/wiki/Breadth-first_search) order. The reason this is a tall order is that `git-rebase` is already a long-running command (what with `--continue` and `--abort` and all that), so `git-cascade-rebase` needs to be, too.
 
 ## Stale branches
 
