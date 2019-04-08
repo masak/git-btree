@@ -124,7 +124,7 @@ I have this other tool called `git-cascade-rebase` that I haven't written yet. S
 
 ## Stale branches
 
-Absent `git-recursive-rebase`, child branches are going to have the parent branch's _old_ commit as the ancestor. So, assuming we've rebased the `feature-a1` branch:
+Absent `git-cascade-rebase`, child branches are going to have the parent branch's _old_ commit as the ancestor. So, assuming we've rebased the `feature-a1` branch:
 
 ```
 ...--o--o--o----------------------o master
@@ -192,7 +192,7 @@ Here's a quick example of remote-branch information that could be shown.
 
 A `{push}` corresponds to the remote branch being strictly behind the local branch. A `{force-push}` corresponds to the remote branch being diverged with the local branch.
 
-Note how, in this example, `feature-a2` and `feature-a3` will probably need to be force-pushed eventually, but that information is suppressed right now, since they are stale currently and need to be recursive-rebased first.
+Note how, in this example, `feature-a2` and `feature-a3` will probably need to be force-pushed eventually, but that information is suppressed right now, since they are stale currently and need to be cascade-rebased first.
 
 Conceivably there should be a tool for pushing all the branches in the listing that can be non-force pushed. I'd like it to be something reasonable that doesn't mess up the tab completion of `git push`. Maybe `git pa` (as in "push all"). That command could also take a `--force` flag to push the `{force-push}` branches, too.
 
