@@ -8,7 +8,8 @@
         "Test::Branches::MergedBehind": "lib/Test/Branches/MergedBehind.pm6",
         "Test::Branches::AheadBehind": "lib/Test/Branches/AheadBehind.pm6",
         "Test::Branches::AllAhead": "lib/Test/Branches/AllAhead.pm6",
-        "Test::Branches::Conflict": "lib/Test/Branches/Conflict.pm6"
+        "Test::Branches::Conflict": "lib/Test/Branches/Conflict.pm6",
+        "Test::Branches::FarConflict": "lib/Test/Branches/FarConflict.pm6"
     },
     "name": "git-btree",
     "description": "Captures people's intuition about branches having parent branches, and shows them as a tree",

@@ -9,6 +9,7 @@ role Git::Branch {
     method add-child(Git::Branch::Child $child-branch) {
         @.children.push($child-branch);
         @.children.=sort(*.name);
+        $child-branch.parent = self;
     }
 
     method AT-POS($pos) {
@@ -88,6 +89,7 @@ class Git::Branch::Root does Git::Branch {
 class Git::Branch::Child does Git::Branch {
     has $.ahead is rw = 0;
     has $.behind is rw = 0;
+    has Git::Branch $.parent is rw;
 
     method action-symbol() {
         when $.conflict { "<red>!</red>" }
@@ -110,7 +112,12 @@ class Git::Branch::Child does Git::Branch {
         return " [done]"
             if !$ahead && $behind;
 
-        my $conflict = $.conflict ?? "<red>conflict</red>" !! "";
+        my $against = $.conflict && $.conflict-against ne $.parent.name
+                ?? " against {$.conflict-against}"
+                !! "";
+        my $conflict = $.conflict
+                ?? "<red>conflict</red>$against"
+                !! "";
         my @terms = [$ahead, $behind, $conflict]\
             .grep(* ne "");
         return ""

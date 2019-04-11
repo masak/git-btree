@@ -14,6 +14,15 @@ sub infer-tree(Str $current-branch, %branches, &branches-conflict:($, $) = &neve
     my %branch-of-auth;
     my %known-to-branch;
 
+    die "No master branch -- TODO"
+        unless my $log-of-root = %branches{$root-name};
+    die "No commits for the root branch -- TODO"
+        unless my @lines-of-root = lines($log-of-root);
+    my $root-branch = Git::Branch::Root.new(
+        :name($root-name),
+        :is-current-branch($current-branch eq $root-name),
+    );
+
     sub traverse($branch, @commits) {
         my $next-sha = "";
         my $index = 0;
@@ -21,14 +30,14 @@ sub infer-tree(Str $current-branch, %branches, &branches-conflict:($, $) = &neve
 
         for @commits -> $commit {
             $commit ~~ /
-                ^
-                (<[ 0..9 a..f ]> ** 40)
-                " ("
-                ([<[ 0..9 a..f ]> ** 40] *% " ")
-                ") "
-                (.+)
-                $
-            / or die "Unexpected line format `$commit`";
+            ^
+                    (<[ 0..9 a..f ]> ** 40)
+                    " ("
+                    ([<[ 0..9 a..f ]> ** 40] *% " ")
+                    ") "
+                    (.+)
+                    $
+                    / or die "Unexpected line format `$commit`";
 
             my $sha = ~$0;
             my $parents = ~$1;
@@ -40,8 +49,8 @@ sub infer-tree(Str $current-branch, %branches, &branches-conflict:($, $) = &neve
             }
 
             $next-sha = $parents
-                ?? $parents.words[0]
-                !! "";
+                    ?? $parents.words[0]
+                    !! "";
 
             if %known-to-branch{$auth} {
                 $ahead = $index;
@@ -49,12 +58,14 @@ sub infer-tree(Str $current-branch, %branches, &branches-conflict:($, $) = &neve
 
             if %branch-of-auth{$auth} -> [$behind, $parent-branch] {
                 $branch.ahead = $ahead > -1
-                    ?? $ahead
-                    !! $index;
+                        ?? $ahead
+                        !! $index;
                 $branch.behind = $behind;
                 $parent-branch.add-child($branch);
-                if branches-conflict($branch.name, $parent-branch.name) {
-                    $branch.mark-conflicted-against($parent-branch);
+                for $parent-branch, *.parent ... $root-branch -> $ancestor-branch {
+                    if branches-conflict($branch.name, $ancestor-branch.name) {
+                        $branch.mark-conflicted-against($ancestor-branch);
+                    }
                 }
                 last;
             }
@@ -66,14 +77,6 @@ sub infer-tree(Str $current-branch, %branches, &branches-conflict:($, $) = &neve
         }
     }
 
-    die "No master branch -- TODO"
-        unless my $log-of-root = %branches{$root-name};
-    die "No commits for the root branch -- TODO"
-        unless my @lines-of-root = lines($log-of-root);
-    my $root-branch = Git::Branch::Root.new(
-        :name($root-name),
-        :is-current-branch($current-branch eq $root-name),
-    );
     traverse($root-branch, @lines-of-root);
 
     for @sorted-branches -> Pair ( :key($branch), :value($log) ) {
