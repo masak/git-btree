@@ -105,7 +105,7 @@ Having merged and purged `feature-b`, let's assume `feature-a1` actually got con
            +--o--o--o feature-a2 (three commits ahead of feature-a1)
 ```
 
-From the commit history alone, we can't tell whether `feature-a1` is conflicted or not. That information resides inside of the commits, more precisely in the interplay between the two commits "on" `feature-a1` and the two commits "on" `master`. (The square quotes are a signal that this is `btree`'s view of what it means to be on a branch, not Git's.)
+From the commit history alone, we can't tell whether `feature-a1` is conflicted or not. That information resides inside of the commits, more precisely in the interplay between the two commits "on" `feature-a1` and the two commits "on" `master`. (The scare quotes are a signal that this is `btree`'s view of what it means to be on a branch, not Git's.)
 
 In this case, we assume it's conflicted. Then the output is this:
 
