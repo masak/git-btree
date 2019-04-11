@@ -75,7 +75,7 @@ Ok, so let's assume `feature-b` gets merged. A new merge commit will show up on 
         :        |
         :        +--o--o--o feature-a2 (three commits ahead of feature-a1)
         :
-        feature-b (one commit behind master)
+        feature-b (four = three + one merge commits behind master)
 ```
 
 Branches which are behind but not ahead are defined as _done_, because the typical case by far is that these were recently merged into `master`. The tool will assume that this is the case, and show these branches separately at the bottom after a divider.

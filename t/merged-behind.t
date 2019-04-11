@@ -16,7 +16,7 @@ my $root = infer-tree("", %branches);
     isa-ok $branch, Git::Branch::Child;
     is $branch.name, "feature-b", "the name of the first child of 'master' is 'feature-b'";
     is $branch.ahead, 0, "...and it's 0 commits ahead";
-    is $branch.behind, 1, "...and it's 1 commit behind";
+    is $branch.behind, 4, "...and it's 4 commits behind";
 }
 
 {

@@ -8,6 +8,56 @@ sub infer-tree(Str $current-branch, %branches) is export {
     # this value will be overridable by config in the fullness of time
     my $root-name = "master";
     my %branch-of-auth;
+    my %known-to-branch;
+
+    sub traverse($branch, @commits) {
+        my $next-sha = "";
+        my $index = 0;
+        my $ahead = -1;
+
+        for @commits -> $commit {
+            $commit ~~ /
+                ^
+                (<[ 0..9 a..f ]> ** 40)
+                " ("
+                ([<[ 0..9 a..f ]> ** 40] *% " ")
+                ") "
+                (.+)
+                $
+            / or die "Unexpected line format `$commit`";
+
+            my $sha = ~$0;
+            my $parents = ~$1;
+            my $auth = ~$2;
+
+            if $next-sha ne "" && $next-sha ne $sha {
+                %known-to-branch{$auth} = $branch;
+                next;
+            }
+
+            $next-sha = $parents
+                ?? $parents.words[0]
+                !! "";
+
+            if %known-to-branch{$auth} {
+                $ahead = $index;
+            }
+
+            if %branch-of-auth{$auth} -> [$behind, $parent-branch] {
+                $branch.ahead = $ahead > -1
+                    ?? $ahead
+                    !! $index;
+                $branch.behind = $behind;
+                $parent-branch.add-child($branch);
+                last;
+            }
+            else {
+                %branch-of-auth{$auth} = [$index, $branch];
+            }
+
+            $index++;
+        }
+    }
 
     die "No master branch -- TODO"
         unless my $log-of-root = %branches{$root-name};
@@ -17,19 +67,7 @@ sub infer-tree(Str $current-branch, %branches) is export {
         :name($root-name),
         :is-current-branch($current-branch eq $root-name),
     );
-    for @lines-of-root.kv -> $behind, $line {
-        $line ~~ /
-            ^
-            <[ 0..9 a..f ]> ** 40
-            " ("
-            [<[ 0..9 a..f ]> ** 40] *% " "
-            ") "
-            (.+)
-            $
-        / or die "Unexpected line format `$line`";
-        my $auth = ~$0;
-        %branch-of-auth{$auth} = [$behind, $root-branch];
-    }
+    traverse($root-branch, @lines-of-root);
 
     for @sorted-branches -> Pair ( :key($branch), :value($log) ) {
         next if $branch eq $root-name;
@@ -43,27 +81,7 @@ sub infer-tree(Str $current-branch, %branches) is export {
             :is-current-branch($current-branch eq $branch),
         );
 
-        for @lines.kv -> $index, $line {
-            $line ~~ /
-                ^
-                <[ 0..9 a..f ]> ** 40
-                " ("
-                [<[ 0..9 a..f ]> ** 40] *% " "
-                ") "
-                (.+)
-                $
-            / or die "Unexpected line format `$line`";
-            my $auth = ~$0;
-            if %branch-of-auth{$auth} -> [$behind, $parent-branch] {
-                $this-branch.ahead = $index;
-                $this-branch.behind = $behind;
-                $parent-branch.add-child($this-branch);
-                last;
-            }
-            else {
-                %branch-of-auth{$auth} = [$index, $this-branch];
-            }
-        }
+        traverse($this-branch, @lines);
     }
 
     return $root-branch;
