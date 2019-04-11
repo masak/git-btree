@@ -1,6 +1,10 @@
 use Git::Branch;
 
-sub infer-tree(Str $current-branch, %branches) is export {
+sub never-conflict($, $) {
+    return False;
+}
+
+sub infer-tree(Str $current-branch, %branches, &branches-conflict:($, $) = &never-conflict) is export {
     # if we traverse the branches by increasing commit log length, we can be sure to always
     # know about a branch's parent when visiting the branch
     my @sorted-branches = %branches.sort({ +lines(.value) });
@@ -49,6 +53,9 @@ sub infer-tree(Str $current-branch, %branches) is export {
                     !! $index;
                 $branch.behind = $behind;
                 $parent-branch.add-child($branch);
+                if branches-conflict($branch.name, $parent-branch.name) {
+                    $branch.mark-conflicted-against($parent-branch);
+                }
                 last;
             }
             else {

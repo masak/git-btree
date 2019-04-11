@@ -4,6 +4,7 @@ role Git::Branch {
     has $.name is required;
     has Bool $.is-current-branch;
     has Git::Branch::Child @.children;
+    has Str $!conflict-against = "";
 
     method add-child(Git::Branch::Child $child-branch) {
         @.children.push($child-branch);
@@ -15,7 +16,7 @@ role Git::Branch {
     }
 
     method color-output() {
-        my $branch-description = "{self.action-symbol()} {self.color-name()}{self.ahead-behind-info()}\n";
+        my $branch-description = "{self.action-symbol()} {self.color-name()}{self.info()}\n";
 
         my @active-branches = @.children.grep(!*.done);
         my $active-branches = @active-branches».color-output()\
@@ -37,11 +38,23 @@ role Git::Branch {
             .subst(/"<" "/"? [\w+] +% "-" ">"/, "", :g);
     }
 
+    method conflict() {
+        return $!conflict-against ne "";
+    }
+
+    method conflict-against() {
+        return $!conflict-against || Nil;
+    }
+
+    method mark-conflicted-against(Git::Branch $branch) {
+        $!conflict-against = $branch.name;
+    }
+
     method action-symbol() { ... }
 
     method color-name() { ... }
 
-    method ahead-behind-info() { ... }
+    method info() { ... }
 
     method child-indent() { ... }
 
@@ -59,7 +72,7 @@ class Git::Branch::Root does Git::Branch {
             !! $.name;
     }
 
-    method ahead-behind-info() {
+    method info() {
         "";
     }
 
@@ -77,11 +90,10 @@ class Git::Branch::Child does Git::Branch {
     has $.behind is rw = 0;
 
     method action-symbol() {
-        $.ahead && $.behind
-            ?? "<red>*</red>"
-            !! self.done()
-                ?? "<gray>~</gray>"
-                !! ".";
+        when $.conflict { "<red>!</red>" }
+        when ?$.ahead && ?$.behind { "<red>*</red>" }
+        when $.done { "<gray>~</gray>" }
+        default { "." }
     }
 
     method color-name() {
@@ -92,14 +104,19 @@ class Git::Branch::Child does Git::Branch {
                 !! "<green>{$.name}</green>";
     }
 
-    method ahead-behind-info() {
-        $.ahead && $.behind
-            ?? " [+{$.ahead}, -{$.behind}]"
-            !! $.ahead
-                ?? " [+{$.ahead}]"
-                !! $.behind
-                    ?? " [done]"
-                    !! "";
+    method info() {
+        my $ahead = $.ahead ?? "+{$.ahead}" !! "";
+        my $behind = $.behind ?? "-{$.behind}" !! "";
+        return " [done]"
+            if !$ahead && $behind;
+
+        my $conflict = $.conflict ?? "<red>conflict</red>" !! "";
+        my @terms = [$ahead, $behind, $conflict]\
+            .grep(* ne "");
+        return ""
+            unless @terms;
+
+        return " [{ @terms.join(", ") }]";
     }
 
     method child-indent() {
