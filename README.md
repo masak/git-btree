@@ -198,6 +198,36 @@ Conceivably there should be a tool for pushing all the branches in the listing t
 
 Guess we could sometimes show `{force-push, conflict}`, but that's not so informative, because that conflict has already been resolved locally, and will anyway be force-pushed away, so... better just display it as `{force-push}`.
 
+## Branching
+
+Branches are not "primary" in Git; the commit graph is. Branches just float on top of the commit graph, like very movable browser bookmarks.
+
+I just had a real-world situation where I was working on some branch `feature-f`, and had made three commits on it already:
+
+```
+. master
+  . feature-f [+3]
+```
+
+Then I discovered a bug, and I made a commit of what I found on a separate branch `bug`:
+
+```
+. master
+  . feature-f [+3]
+  ... bug [+1]
+```
+
+But then I went back and continued working on the `feature-f` branch, making 5 more commits on it:
+
+```
+. master
+  . <anon> [+3]
+  ... bug [+1]
+  ... feature-f [+5]
+```
+
+The point is that the common commit that one or more branches share as a parent doesn't necessarily have a branch ref associated with it.
+
 ## Colors
 
 The `git-bb` tool has pioneered the use of colors a bit. The branch names should be colored as follows:
