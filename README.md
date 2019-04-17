@@ -122,7 +122,7 @@ Note, again, that `feature-a2` is not marked as conflicted. That's because the c
 
 I have this other tool called `git-cascade-rebase` that I haven't written yet. Similar to this `git-btree` tool, it would take branch hierarchies into consideration, and when you asked it to rebase a branch, it would first rebase that branch and then rebase all its descendant branches in [breadth-first](https://en.wikipedia.org/wiki/Breadth-first_search) order. The reason this is a tall order is that `git-rebase` is already a long-running command (what with `--continue` and `--abort` and all that), so `git-cascade-rebase` needs to be, too.
 
-## Stale branches
+## Stale
 
 Absent `git-cascade-rebase`, child branches are going to have the parent branch's _old_ commit as the ancestor. So, assuming we've rebased the `feature-a1` branch:
 
@@ -175,7 +175,7 @@ Again, this is conjectural, but maybe in such a case the output should note as m
   ....! feature-a3 [+2, conflict against master]
 ```
 
-## Remote branches
+## Remote
 
 In Git, a "remote branch" is paradoxically not a branch over at the remote repo, but a local ref that _mirrors_ a branch over at the remote repo. As such, it can easily get out-of-date.
 
