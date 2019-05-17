@@ -198,6 +198,8 @@ Conceivably there should be a tool for pushing all the branches in the listing t
 
 Guess we could sometimes show `{force-push, conflict}`, but that's not so informative, because that conflict has already been resolved locally, and will anyway be force-pushed away, so... better just display it as `{force-push}`.
 
+A branch that has been pushed is in some sense published to the world, and the typical expectation is that we will eventually merge the branch all the way up to master. Since many branches can be ongoing/pushed at the same time, there might be conflicts hiding _between_ those branches, that won't show up before one of them has been pushed. It would be very nice to be able to dry-run-merge _all the pushed branches against each other_, and get information about possible future conflicts. Questions arise both about how slow this will be in practice, and how best to visualize a conflict between two disparate branches in the tree.
+
 ## Branching
 
 Branches are not "primary" in Git; the commit graph is. Branches just float on top of the commit graph, like very movable browser bookmarks.
