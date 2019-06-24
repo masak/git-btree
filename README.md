@@ -96,14 +96,10 @@ A branch which is neither ahead nor behind is called _empty_. Work on this branc
 
 Here's a table summarizing the different states a child branch can be in:
 
-```
-                    no parent commits   parent commmits
-------------------+-------------------+-----------------+
-no child commits  | empty             | behind (done)   |
-                  |                   |                 |
-child commits     | ahead             | diverged        |
-------------------+-------------------+-----------------+
-```
+|                  | no parent commits | parent commits |
+| ---------------- | ----------------- | -------------- |
+| no child commits | empty             | behind (done)  |
+| child commits    | ahead             | diverged       |
 
 ## Done
 
