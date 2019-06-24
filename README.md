@@ -262,6 +262,49 @@ Again, this is conjectural, but maybe in such a case the output should note as m
   ....! feature-a3 [+2, conflict against master]
 ```
 
+## Work-in-progress (WIP) branches
+
+The `git-stash` command is one of my favorites. It allows me to "hide away" work temporarily in order to do other
+things, including unlocking Git commands that are better done with a clean working copy (such as `git pull`).
+
+Stashes have one drawback, though: they are not so visible. Typically, I come back to some well-used repository and
+discover stash objects that are 6 months old or more. Sometimes these are just abandoned attempts at something, and can
+be thrown away, but not always. The fact is that stashes work a little bit _too_ well in hiding away the work, and what
+should've been temporary becomes... less so.
+
+The `git-wip` command (another custom tool) remedies this. Instead of creating a stash object for the ongoing work, it
+instead creates a new _branch_. Using `git-btree` terminology, this is a child branch with one commit.
+
+The name of the new branch is `<current-branch-name>-wip-<today's-date>`. For example `masak/cfg-wip-2019-06-24`. If
+several WIP branches are created on the same date, they also get a serial number starting at 2:
+`masak/cfg-wip-2019-06-24(2)`. (Yes, branch names can have parentheses in them!) Typically, there won't be a need to
+have more than one WIP branch a day for a given branch, or even more than one WIP branch, period.
+
+`git-btree` has some built-in support for recognizing and displaying WIP branches. Instead of showing them on their own
+line, the WIP branches are shown on their parent branch.
+
+```
+$ git btree
+. master
+  . feature-a1 [+2, -3] <WIP, -1, stale (3 days ago)>
+  ... feature-a2 [+3]
+```
+
+Because WIP branches are regular branches, they can get behind, or conflicted, or stale. This information is also
+displayed. (The above example shows the WIP being 1 commit behind its parent `feature-a1`, and stale because
+`feature-a1` was rebased after the WIP branch was made.) A `git-cascade-rebase` would pick up a WIP branch as any other
+branch and make sure it's fresh.
+
+Similar to the stash command, `git wip pop` will apply the changes to the current branch and _remove_ the WIP branch,
+whereas `git wip apply` will apply the changes but keep the WIP branch around. If needed, you can disambiguate and
+choose a WIP branch to apply or pop, either by sequence number or by date or by its full branch name. If you don't
+specify anything, the newest WIP branch is chosen. The single command `git unwip` is synonymous with `git wip pop`.
+
+Unlike stashes, a WIP branch cannot easily be applied on a branch that's different from the one where it was created.
+Although that's undeniably a use case, I don't believe I will miss that feature so much. For the cases where just
+"floating" some changes across branches using `git checkout` is not enough, the regular `git stash` command can still
+cover that use case.
+
 ## Remote
 
 In Git, a "remote branch" is (confusingly) not a branch over at the remote repo, but a local (non-branch) ref that
