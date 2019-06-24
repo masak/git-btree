@@ -101,6 +101,9 @@ Here's a table summarizing the different states a child branch can be in:
 | **no child commits** | empty             | behind (done)  |
 | **child commits**    | ahead             | diverged       |
 
+In the examples in this README, the branches are listed alphabetically. In the actual usage of `git-btree`, they are
+listed in ascending order of the "behind" number; this tends to show recently-worked-on branches near the top.
+
 ## Done
 
 Let's now assume `feature-b` gets merged. A new merge commit will show up on `master`, and `feature-b` will be a parent
