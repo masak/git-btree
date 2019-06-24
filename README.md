@@ -1,3 +1,17 @@
+## Contents
+
+* [Introduction](#introduction)
+* [Ahead, behind, diverged, empty](#ahead-behind-diverged-empty)
+* [Done](#done)
+* [Conflicts](#conflicts)
+* [Stale](#stale)
+* [Work-in-progress (WIP) branches](#work-in-progress-wip-branches)
+* [Remote](#remote)
+* [Branching](#branching)
+* [Colors](#colors)
+
+## Introduction
+
 The basic idea of `git-btree` is that the human intuition of a commit "being on a branch" is not reflected by Git
 out-of-the-box.
 
