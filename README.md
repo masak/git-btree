@@ -119,9 +119,8 @@ like this:
         feature-b (four commits behind master; the original three + the new merge)
 ```
 
-Branches which are behind but not ahead are defined as _done_, because the typical case by far is that these were
-recently merged into `master`. The tool will assume that this is the case, and show these branches separately at the
-bottom after a divider.
+A branch which is behind but not ahead is defined as _done_ if the parent branch holds a merge commit pulling in all of
+"ahead" work from that branch. For done branches, the tool shows them separately at the bottom after a divider.
 
 ```
 $ git btree
