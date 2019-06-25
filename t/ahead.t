@@ -3,7 +3,8 @@ use Test::Branches::AllAhead;
 use Git::BTree::Infer;
 use Git::Branch;
 
-my $root = infer-tree("", %branches);
+my $listing = infer-tree("", %branches);
+my $root = $listing.active[0];
 
 {
     my $branch = $root;
@@ -36,7 +37,7 @@ my $root = infer-tree("", %branches);
 }
 
 {
-    is $root.monochrome-output(), q:to/EOF/, "correct monochrome output";
+    is $listing.monochrome-output(), q:to/EOF/, "correct monochrome output";
         . master
           . feature-a1 [+2]
           ... feature-a2 [+3]
@@ -45,7 +46,7 @@ my $root = infer-tree("", %branches);
 }
 
 {
-    is $root.color-output(), q:to/EOF/, "correct color output";
+    is $listing.color-output(), q:to/EOF/, "correct color output";
         . master
           . <green>feature-a1</green> [+2]
           ... <green>feature-a2</green> [+3]

@@ -13,6 +13,7 @@ sub infer-tree(Str $current-branch, %branches, &branches-conflict:($, $) = &neve
     my $root-name = "master";
     my %branch-of-auth;
     my %known-to-branch;
+    my @done;
 
     die "No master branch -- TODO"
         unless my $log-of-root = %branches{$root-name};
@@ -56,15 +57,20 @@ sub infer-tree(Str $current-branch, %branches, &branches-conflict:($, $) = &neve
                 $ahead = $index;
             }
 
-            if %branch-of-auth{$auth} -> [$behind, $parent-branch] {
+            if $branch ~~ Git::Branch::Child && %branch-of-auth{$auth} -> [$behind, $parent-branch] {
                 $branch.ahead = $ahead > -1
                         ?? $ahead
                         !! $index;
                 $branch.behind = $behind;
-                $parent-branch.add-child($branch);
-                for $parent-branch, *.parent ... $root-branch -> $ancestor-branch {
-                    if branches-conflict($branch.name, $ancestor-branch.name) {
-                        $branch.mark-conflicted-against($ancestor-branch);
+                if $behind && !$ahead {
+                    @done.push($branch);
+                }
+                else {
+                    $parent-branch.add-child($branch);
+                    for $parent-branch, *.parent ... $root-branch -> $ancestor-branch {
+                        if branches-conflict($branch.name, $ancestor-branch.name) {
+                            $branch.mark-conflicted-against($ancestor-branch);
+                        }
                     }
                 }
                 last;
@@ -94,5 +100,5 @@ sub infer-tree(Str $current-branch, %branches, &branches-conflict:($, $) = &neve
         traverse($this-branch, @lines);
     }
 
-    return $root-branch;
+    return Git::Branch::Listing.new(:active([$root-branch]), :@done);
 }

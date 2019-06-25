@@ -19,24 +19,12 @@ role Git::Branch {
     method color-output() {
         my $branch-description = "{self.action-symbol()} {self.color-name()}{self.info()}\n";
 
-        my @active-branches = @.children.grep(!*.done);
-        my $active-branches = @active-branches».color-output()\
+        my $child-branches = @.children».color-output()\
             .join()\
             .indent(2)\
             .subst(/^^ "  "/, self.child-indent(), :g);
-
-        my @done-branches = @.children.grep(*.done);
-        my $done-branches = @done-branches
-            ?? "---\n" ~ @done-branches».color-output()\
-                .join()
-            !! "";
-
-        return $branch-description ~ $active-branches ~ $done-branches;
-    }
-
-    method monochrome-output() {
-        self.color-output()
-            .subst(/"<" "/"? [\w+] +% "-" ">"/, "", :g);
+            
+        return $branch-description ~ $child-branches;
     }
 
     method conflict() {
@@ -132,5 +120,24 @@ class Git::Branch::Child does Git::Branch {
 
     method done() {
         $.behind && !$.ahead;
+    }
+}
+
+class Git::Branch::Listing {
+    has Git::Branch::Root @.active;
+    has Git::Branch @.done;
+
+    method color-output() {
+        my $active = @.active».color-output().join();
+        my $done = @.done».color-output().join();
+
+        return $done
+            ?? "{$active}---\n{$done}"
+            !! $active;
+    }
+
+    method monochrome-output() {
+        self.color-output()
+            .subst(/"<" "/"? [\w+] +% "-" ">"/, "", :g);
     }
 }

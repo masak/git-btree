@@ -8,7 +8,8 @@ sub report-conflict($branch1, $branch2) {
             || (%conflicts{$branch2} // "") eq $branch1;
 }
 
-my $root = infer-tree("", %branches, &report-conflict);
+my $listing = infer-tree("", %branches, &report-conflict);
+my $root = $listing.active[0];
 
 {
     my $branch = $root;
@@ -37,7 +38,7 @@ my $root = infer-tree("", %branches, &report-conflict);
 }
 
 {
-    is $root.monochrome-output(), q:to/EOF/, "correct monochrome output";
+    is $listing.monochrome-output(), q:to/EOF/, "correct monochrome output";
         . master
           ! feature-a1 [+2, -1, conflict]
           ... feature-a2 [+3]
@@ -45,7 +46,7 @@ my $root = infer-tree("", %branches, &report-conflict);
 }
 
 {
-    is $root.color-output(), q:to/EOF/, "correct color output";
+    is $listing.color-output(), q:to/EOF/, "correct color output";
         . master
           <red>!</red> <green>feature-a1</green> [+2, -1, <red>conflict</red>]
           ... <green>feature-a2</green> [+3]
