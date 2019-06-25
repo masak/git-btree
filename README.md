@@ -8,6 +8,7 @@
 * [Work-in-progress (WIP) branches](#work-in-progress-wip-branches)
 * [Remote](#remote)
 * [Branching](#branching)
+* [Orphaned branches](#orphaned-branches)
 * [Colors](#colors)
 
 ## Introduction
@@ -403,6 +404,23 @@ happen for a number of reasons &mdash; for example, maybe someone rebased *parts
 In summary, Git doesn't really care about branches. Branches are not primary &mdash; the commit graph is. Usually we'll
 have a branch label to show for a particular ancestor commit; when we don't, `git-btree` falls back to using commit
 SHA-1s, analogously to how many Git commands show the "current branch" when working with a detached `HEAD`.
+
+## Orphaned branches
+
+Typically a repository will contain `master` and branches that are descendants of `master`. Such a hierarchy is not
+enforced by Git, and so it's also possible to have branches that have no history in common with `master`. Git
+documentation refers to these as _orphaned branches_.
+
+The `git-btree` tool shows orphaned branches in their own hierarchy, always after `master` but before any fold with done
+branches.
+
+```
+. master
+  . feature-f [+3]
+. gh-pages [orphan]
+---
+~ feature-g [done]
+```
 
 ## Colors
 
