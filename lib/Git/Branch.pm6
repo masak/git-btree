@@ -8,7 +8,7 @@ role Git::Branch {
 
     method add-child(Git::Branch::Child $child-branch) {
         @.children.push($child-branch);
-        @.children.=sort(*.name);
+        @.children.=sort(*.behind);
         $child-branch.parent = self;
     }
 
@@ -91,7 +91,11 @@ class Git::Branch::Child does Git::Branch {
             ?? "<inverted-green>{$.name}</inverted-green>"
             !! self.done()
                 ?? "<gray>{$.name}</gray>"
-                !! "<green>{$.name}</green>";
+                !! ?$.ahead && ?$.behind
+                    ?? "<cyan>{$.name}</cyan>"
+                    !! ?$.ahead
+                        ?? "<green>{$.name}</green>"
+                        !! $.name;
     }
 
     method info() {
