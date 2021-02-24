@@ -17,7 +17,7 @@ The basic idea of `git-btree` is that the human intuition of a commit "being on 
 out-of-the-box.
 
 * **Git's model of branches**: A branch is a ref that moves forwards with new commits. Commits are not technically "on"
-  a branch; instead, commits can _reachable_ from a certain branch. The set of branches is "flat" in the sense that they
+  a branch; instead, commits may be _reachable_ from a certain branch. The set of branches is "flat" in the sense that they
   are just names in a list somewhere; however, branches are sometimes reachable from each other in the sense that one
   branch ref is upstream of another. This is not reflected so clearly in tool output, however; _especially_ not when
   branches go stale with respect to one another. (See below.)
