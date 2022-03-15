@@ -438,3 +438,8 @@ The `{push}` and `{force-push}` should probably also be colored, maybe... bright
 
 It's a small thing, but `git-btree` (just like `git-bb`) also shows the currently checked-out branch by inverting its
 colors. (I think this should be made to work even when we're in detached `HEAD` mode.)
+
+## Similar/prior art
+
+* [This blog post](https://0xc0d1.com/blog/git-stack/) about stacked workflows. Not exactly the same idea, but clearly
+  related.
