@@ -11,6 +11,14 @@
 * [Orphaned branches](#orphaned-branches)
 * [Colors](#colors)
 
+## Quick aside: inspiration from Gundo
+
+I like the way the undo tree is displayed in [gundo.vim](https://github.com/sjl/gundo.vim), and I think I'd like to copy
+the general look of that into git-btree. Basically turning the tree upside-down, and also spending space/characters
+connecting things using lines.
+
+_Stand by for updating the below examples to this new look._
+
 ## Introduction
 
 The basic idea of `git-btree` is that the human intuition of a commit "being on a branch" is not reflected by Git
