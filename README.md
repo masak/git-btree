@@ -10,6 +10,7 @@
 * [Branching](#branching)
 * [Orphaned branches](#orphaned-branches)
 * [Colors](#colors)
+* [Similar/prior art](#similarprior-art)
 
 ## Quick aside: inspiration from Gundo
 
@@ -451,3 +452,4 @@ colors. (I think this should be made to work even when we're in detached `HEAD` 
 
 * [This blog post](https://0xc0d1.com/blog/git-stack/) about stacked workflows. Not exactly the same idea, but clearly
   related.
+* Mark Dominus blogs: [I wish people would stop insisting that Git branches are nothing but refs](https://blog.plover.com/prog/git/branches.html)
